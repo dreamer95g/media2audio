@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Media 2 Audio</title>
+    <link rel="stylesheet" type="text/css" href="bootstrap.min.css" />
+    <!-- estilo del loading  -->
+    <link rel="stylesheet" type="text/css" href="./loading.css" />
+  </head>
+
+  <body>
+    <br />
+    <br />
+
+    <div id="main" class="container">
+      <div class="col-sm-3"></div>
+      <div class="col-sm-5">
+        <h3 align="center">Media 2 Audio Project</h3>
+        <h3 align="center">Low & High Quality</h3>
+        <hr />
+        <br />
+
+        <form role="form">
+          <div class="form-group" v-if="!loading">
+            <label>Quality:</label><br />
+            <input
+              type="radio"
+              v-model="recipe.quality"
+              name="quality"
+              value="high"
+            />High &nbsp;
+            <input
+              type="radio"
+              v-model="recipe.quality"
+              name="quality"
+              value="low"
+            />Low
+            <br />
+          </div>
+          <div class="form-group" v-if="!loading">
+            <label>Directory:</label>
+            <input
+              v-model="recipe.source"
+              type="text"
+              class="form-control"
+              @keyup.enter="validate()"
+            />
+            <label>The address can not have spaces between folders</label>
+            <label>Ex: C:\Users\gabry\Desktop\media_input</label>
+          </div>
+          <span class="btn btn-primary" @click="validate()" v-if="!loading"
+            >Convert</span
+          >
+
+          <div v-if="loading">
+            <div class="sk-three-bounce" id="loading">
+              <div class="sk-child sk-bounce1"></div>
+              <div class="sk-child sk-bounce2"></div>
+              <div class="sk-child sk-bounce3"></div>
+            </div>
+          </div>
+        </form>
+        <br />
+      </div>
+    </div>
+    <!-- IMPORTAR LAS LIBRERIAS NECESARIAS -->
+    <script src="vue.js"></script>
+    <script src="jquery.min.js"></script>
+    <script src="axios.min.js"></script>
+
+    <script type="text/javascript">
+      new Vue({
+        el: "#main",
+
+        data: {
+          recipe: {
+            source: "",
+            quality: "",
+          },
+          loading: false,
+        },
+
+        methods: {
+          //VALIDAR LOS CAMPOS
+          validate: function () {
+            if (this.recipe.source !== "" && this.recipe.quality !== "") {
+              this.convert(this.source);
+            } else {
+              alert(" Fill the inputs ");
+            }
+          },
+
+          // CONVERTIR
+          convert: function (source) {
+            this.loading = true;
+            axios
+              .post(
+                "http://localhost/media2audio/main.php",
+                this.createdFormData()
+              )
+              .then((response) => {
+                this.loading = false;
+                console.log(response.data);
+                let check = response.data.indexOf("All");
+                if (check != -1) {
+                  alert("All Ok!");
+                } else {
+                  alert(response.data);
+                }
+              });
+          },
+          // PARA PODER OBTENERLOS EN PHP
+          createdFormData: function () {
+            var formDa = new FormData();
+            for (var key in this.recipe) {
+              formDa.append(key, this.recipe[key]);
+            }
+            return formDa;
+          },
+        },
+      });
+    </script>
+  </body>
+</html>

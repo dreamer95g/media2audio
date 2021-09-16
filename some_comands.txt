@@ -1,0 +1,12 @@
+//iper mega comprimido
+ffmpeg -i C:\Users\gabry\Desktop\opus\sufren.mp4 -threads 2 -vn -c:a libopus -b:a 16k -ar 16000 -ac 1 -application voip C:\Users\gabry\Desktop\opus\sufren.ogg
+
+//opus
+ffmpeg -i C:\Users\gabry\Desktop\opus\sufren.mp4 -c:a libopus -b:a 32k -vbr on -compression_level 10 -frame_duration 60 -application voip C:\Users\gabry\Desktop\opus\sufren.opus
+
+
+//buena calidad mp3
+ffmpeg -i C:\Users\gabry\Desktop\opus\sufren.mp4 -vn -ar 44100 -ac 2 -ab 192k -f mp3 C:\Users\gabry\Desktop\opus\sufren.mp3
+
+//normal
+ffmpeg -i audio.ogg -f mp3 newfile.mp3
